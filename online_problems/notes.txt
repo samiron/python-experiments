@@ -1,0 +1,8 @@
+Precision calculation
+    print math.log(999999999999999999, 1000000000)
+    print math.log(1000000000000000000, 1000000000)
+    both is returning 2.0
+    python decimal should be used to deal with arithmatic decimal precison.
+
+Converting a string <=> int
+    int(string_of_10^6_digits) will certainly fail.
