@@ -21,6 +21,28 @@ class Edge:
 
 
 class Tree:
+    """
+    A data structurally simpler approach would be like this
+    Tree:
+        3
+        1 2
+        2 3
+        1 3 2
+        
+    Edges:
+        all_edges= [
+            [1, 2],
+            [2, 3]
+        ]
+    Nodes:
+        value => [color, [all_neighbors]]
+        all_nodes = {
+            1 => [1, [2]],
+            2 => [3, [1,3]],
+            3 => [2, [2]]
+        }
+    However, this class based Node and Edge approach seems more cleaner
+    """
     def __init__(self, total_count):
         self.max_nodes = total_count
         self.all_edges = []
