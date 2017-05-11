@@ -38,8 +38,8 @@ class Tree:
         n2 = self.register_node(node_num_2)
         e = Edge(n1, n2)
         self.all_edges.append(e)
-        n1.add_edge(e, n2)
-        n2.add_edge(e, n1)
+        n1.add_neighbor(n2)
+        n2.add_neighbor(n1)
 
     def add_node_color(self, node_num, color):
         self.all_nodes[node_num-1].color = color
@@ -59,8 +59,6 @@ class Tree:
 def build_tree_from_input(vertices):
     global INH
     tree = Tree(vertices)
-    tree.log()
-    return
     for i in range(1, vertices):
         (x, y) = INH.readline().split()
         x = int(x)
@@ -73,15 +71,28 @@ def build_tree_from_input(vertices):
     tree.all_colors = colors
     return tree
 
-STACK = []
-def _if_multicolor_subtree(color, node):
-    pass
 
-def _is_valid_root(potential_root):
+def _if_multicolor_subtree(color, stack, subtree_root):
+    multicolor = False
+    visited = {}
+    while len(stack) > 0:
+        n = stack.pop()
+        if n.color != color:
+            multicolor = True
+            break
+        visited[n.value] = True
+        for ngh in n.neighbors:
+            if not visited.get(ngh.value, False) and subtree_root.value != ngh.value:
+                stack.append(ngh)
+
+    return multicolor
+
+
+def _is_valid_root(possible_root):
     valid = True
-    for e in potential_root.edges:
-        subtree_start_node = e[1]
-        if _if_multicolor_subtree(subtree_start_node.color, subtree_start_node):
+    for neighbor in possible_root.neighbors:
+        stack = [neighbor]
+        if _if_multicolor_subtree(neighbor.color, stack, possible_root):
             valid = False
             break
     return valid
@@ -102,9 +113,11 @@ def process(n):
     if mono_colored:
         tree.vertex_in_hand = tree.all_nodes[0]
     else:
-        for n in [e.left_node, e.right_node]:
+        assert multi_color_edge is not None
+        for n in [multi_color_edge.left_node, multi_color_edge.right_node]:
             if _is_valid_root(n):
                 tree.vertex_in_hand = n
+                break
 
     _print(tree)
 
