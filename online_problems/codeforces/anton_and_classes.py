@@ -2,14 +2,34 @@
 import sys
 import fileinput
 
+MAX_TIME = 1000000001  # 10^9+1
+
+def process(cmaxs, cmine, pmaxs, pmine):
+    result = 0
+    if cmine < pmaxs:
+        # When CHS comes first
+        result = pmaxs - cmine
+    elif cmaxs > pmine:
+        # when PRG comes first
+        result = cmaxs - pmine
+
+    _print(result)
 
 
-def process():
-    pass
+def _print(diff):
+    print max(0, diff)
 
 
-def _print():
-    pass
+def analyze_schedule(schedule, max_start, min_end):
+    (s, e) = schedule.split()
+    s = int(s)
+    e = int(e)
+    if s > max_start:
+        max_start = s
+    if e < min_end:
+        min_end = e
+
+    return [max_start, min_end]
 
 
 #   Main parts   #
@@ -19,8 +39,22 @@ if len(sys.argv) > 2:
 
 INH = fileinput.FileInput(files=INPUT)
 n = INH.readline()
-while l1:
-    process(l1)
-    l1 = INH.readline()
+
+while n:
+    n = int(n)
+    chs_min_end = MAX_TIME
+    chs_max_start = -1
+    while n:
+        (chs_max_start, chs_min_end) = analyze_schedule(INH.readline(), chs_max_start, chs_min_end)
+        n -= 1
+
+    prg_min_end = MAX_TIME
+    prg_max_start = -1
+    m = int(INH.readline().rstrip())
+    while m:
+        (prg_max_start, prg_min_end) = analyze_schedule(INH.readline(), prg_max_start, prg_min_end)
+        m -= 1
+    process(chs_max_start, chs_min_end, prg_max_start, prg_min_end)
+    n = INH.readline()
 
 INH.close()
