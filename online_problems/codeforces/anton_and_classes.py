@@ -4,16 +4,9 @@ import fileinput
 
 MAX_TIME = 1000000001  # 10^9+1
 
-def process(cmaxs, cmine, pmaxs, pmine):
-    result = 0
-    if cmine < pmaxs:
-        # When CHS comes first
-        result = pmaxs - cmine
-    elif cmaxs > pmine:
-        # when PRG comes first
-        result = cmaxs - pmine
 
-    _print(result)
+def process(cmaxs, cmine, pmaxs, pmine):
+    _print(max((pmaxs - cmine), (cmaxs - pmine)))
 
 
 def _print(diff):
@@ -24,9 +17,9 @@ def analyze_schedule(schedule, max_start, min_end):
     (s, e) = schedule.split()
     s = int(s)
     e = int(e)
-    if s > max_start:
+    if s >= max_start:
         max_start = s
-    if e < min_end:
+    if e <= min_end:
         min_end = e
 
     return [max_start, min_end]
