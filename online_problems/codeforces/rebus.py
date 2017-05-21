@@ -36,7 +36,13 @@ def process(equation):
             plus_remainder = plus_sub_total - (plus_unit_number*plus_count)
             plus_numbers = [plus_unit_number] * plus_count
             if plus_remainder > 0:
-                plus_numbers[0] += plus_remainder
+                i = 0
+                while plus_remainder > 0 and i < len(plus_numbers):
+                    idiff = sum - plus_numbers[i]
+                    portion = min(idiff, plus_remainder)
+                    plus_numbers[i] += portion
+                    plus_remainder -= portion
+                    i += 1
 
         if minus_count > 0:
             minus_unit_number = int(minus_sub_total / minus_count)
