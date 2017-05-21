@@ -2,7 +2,6 @@
 import sys
 import fileinput
 
-
 def process(equation):
     tokenized = equation.split()
     plus_count = 1
@@ -15,16 +14,21 @@ def process(equation):
         if token == '-':
             minus_count += 1
 
-    #print "Plus: %s, Minus: %s, sum: %s" % (plus_count, minus_count, sum)
+    _debug("Plus: %s, Minus: %s, sum: %s", (plus_count, minus_count, sum))
 
     minus_sub_total = minus_count
     plus_sub_total = sum + minus_sub_total
 
-    #print "Minus sub total: %s, Plus sub total: %s" % (minus_sub_total, plus_sub_total)
+    if plus_sub_total < plus_count:
+        diff = plus_count - plus_sub_total
+        plus_sub_total = plus_count
+        minus_sub_total += diff
+
+    _debug("Minus sub total: %s, Plus sub total: %s", (minus_sub_total, plus_sub_total))
 
     if plus_sub_total < sum or plus_sub_total > (plus_count*sum):
         _print()
-    elif minus_count > 0 and minus_sub_total >= (minus_count*sum):
+    elif minus_sub_total > (minus_count*sum):
         _print()
     else:
         plus_unit_number = minus_unit_number = None
@@ -49,12 +53,18 @@ def process(equation):
             minus_remainder = minus_sub_total - (minus_unit_number*minus_count)
             minus_numbers = [minus_unit_number] * minus_count
             if minus_remainder > 0:
-                minus_numbers[0] += minus_remainder
+                i = 0
+                while minus_remainder > 0 and i < len(minus_numbers):
+                    idiff = sum - minus_numbers[i]
+                    portion = min(idiff, minus_remainder)
+                    minus_numbers[i] += portion
+                    minus_remainder -= portion
+                    i += 1
 
-        #print "Plus unit number: %s, minus unit number: %s" % (plus_unit_number, minus_unit_number)
-        #print "Plus remainder: %s, Minus remainder: %s" % (plus_remainder, minus_remainder)
-        #print "Plus numbers: %s" % plus_numbers
-        #print "Minus numbers: %s" % minus_numbers
+        _debug("#Plus unit number: %s, minus unit number: %s", (plus_unit_number, minus_unit_number))
+        _debug("#Plus remainder: %s, Minus remainder: %s", (plus_remainder, minus_remainder))
+        _debug("#Plus numbers: %s", plus_numbers)
+        _debug("#Minus numbers: %s", minus_numbers)
 
         n = plus_numbers.pop()
         for i in range(0, len(tokenized)-2):
@@ -83,6 +93,11 @@ def _print(tokenized=None):
 
 
 #   Main parts   #
+def _debug(string, params):
+    if SPUDEBUG:
+        print string % params
+
+SPUDEBUG = False
 INPUT = None
 if len(sys.argv) > 2:
     INPUT = sys.argv[1]
