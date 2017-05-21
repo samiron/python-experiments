@@ -1,4 +1,4 @@
-# http://codeforces.com/contest/
+# http://codeforces.com/contest/664/problem/B
 import sys
 import fileinput
 

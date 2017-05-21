@@ -2,6 +2,17 @@
 import sys
 import fileinput
 
+"""
+Imagine a number system that starts from 1989
+Starting from this point, for first 10 numbers
+the last most single digit will be used as "y".
+for next 100 number (10 - 99) last two digits will be used
+as "y".
+Following table lists the valid ranges from each length of
+"y". It can be observed form below that either "y" directly
+belong to a range or we just need to add a "1" to next the 
+original year.
+"""
 
 RANGES = [[1989, 1998],             #         0 - 9
           [1999, 2098],             #        10 - 99
@@ -17,7 +28,6 @@ RANGES = [[1989, 1998],             #         0 - 9
 
 def _calculate(yearfix):
     length = len(yearfix)
-    yearfix_int = int(yearfix)
     (start, end) = RANGES[length - 1]
     _debug("Year fix: %6s, Range: [%s, %s]", (yearfix, start, end))
 
@@ -26,16 +36,10 @@ def _calculate(yearfix):
             if str(year).endswith(yearfix):
                 return str(year)
     else:
-        if start <= yearfix_int <= end:
+        if start <= int(yearfix) <= end:
             return yearfix
         else:
-            prefix = 1
-            candidate = str(prefix) + yearfix
-            while int(candidate) <= end:
-                prefix += 1
-                candidate = str(prefix) + yearfix
-            return candidate
-
+            return "1"+yearfix
     return "nothing"
 
 
