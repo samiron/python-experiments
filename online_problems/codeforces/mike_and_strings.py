@@ -17,17 +17,22 @@ def _is_match_by_rotation(ref_chars, chrs, start_point):
 
 
 def _calculate_distance(reference, str):
+    if reference == str:
+        return 0
     _debug("Calculating distance between: %s %s", (reference, str))
     ref_chars = list(reference)
     chrs = list(str)
 
     start_point = 0
+    match_point = None
     while start_point < len(ref_chars):
         if _is_match_by_rotation(ref_chars, chrs, start_point):
+            match_point = start_point
             break
         start_point += 1
 
-    return start_point
+    _debug("distance: %s", match_point)
+    return match_point
 
 
 def process(count):
@@ -39,17 +44,26 @@ def process(count):
 
     ref_index = 0
     min_sum = sys.maxint
-    while ref_index < len(strings):
+    is_minus_one = False
+    while ref_index < len(strings) and not is_minus_one:
         b_index = 0
         distance = 0
         while b_index < len(strings):
             if ref_index != b_index:
-                distance += _calculate_distance(strings[ref_index], strings[b_index])
+                d = _calculate_distance(strings[ref_index], strings[b_index])
+                if d is None:
+                    is_minus_one = True
+                    break
+                else:
+                    distance += d
             b_index += 1
         min_sum = min(min_sum, distance)
         ref_index += 1
 
-    print min_sum
+    if is_minus_one:
+        print "-1"
+    else:
+        print min_sum
 
 
 def _print():
